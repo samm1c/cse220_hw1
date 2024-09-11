@@ -18,16 +18,22 @@ int main(int argc, char **argv) {
     initialize_board(argv[3], num_rows, num_cols);
 
     char piece;
-    int row_choice;
-    int col_choice;
+    int row_choice, col_choice, spaces = 0;
 
-    do {
+    for (int i = 0; i < num_rows; i++) { // run this one time, don't need to calculate spaces continuously
+        for (int j = 0; j < num_cols; j++) {
+                if (board[i][j] == '-') { // counting for number of empty spaces
+                    spaces++;
+                }
+        }
+    }
+    while (spaces > 0) { // while board still has spaces
         //reset variables
         piece = ' ';
         row_choice = -1;
         col_choice = -1;
         
-        //print board
+        //print board and check for spaces
         for (int i = 0; i < num_rows; i++) {
             for (int j = 0; j < num_cols; j++) {
                 printf("%c ", board[i][j]);
@@ -46,18 +52,18 @@ int main(int argc, char **argv) {
             }
         }
         // choose row
-        while (row_choice < 0 || row_choice > num_rows) {
+        while (row_choice < 0 || row_choice >= num_rows) {
             printf("Choose a row (0-%d): ", num_rows - 1);
             scanf(" %d", &row_choice);
-            if (row_choice < 0 || row_choice > num_rows) {
+            if (row_choice < 0 || row_choice >= num_rows) {
                 printf("Invalid choice. ");
             }
         }
         // choose column
-        while (col_choice < 0 || col_choice > num_cols) {
+        while (col_choice < 0 || col_choice >= num_cols) {
             printf("Choose a column (0-%d): ", num_cols - 1);
             scanf(" %d", &col_choice);
-            if (col_choice < 0 || col_choice > num_cols) {
+            if (col_choice < 0 || col_choice >= num_cols) {
                 printf("Invalid choice. ");
             }
         }
@@ -82,8 +88,6 @@ int main(int argc, char **argv) {
                     row_count = 0;
                 }
             }
-            printf("check row success ");
-            printf("%d\n", four_in_a_row);
             //check column
             int col_count = 0;
             for (int i = row_choice - 4; i < row_choice + 4; i++) { // iterating over row number, column stays the same
@@ -98,8 +102,6 @@ int main(int argc, char **argv) {
                     col_count = 0;
                 }
             }
-            printf("check column success ");
-            printf("%d\n", four_in_a_row);
             //check main diagonal
             int main_count = 0;
             for (int i = row_choice - 4, j = col_choice - 4;  i < row_choice + 4 || j < col_choice + 4; i++, j++) {
@@ -115,8 +117,6 @@ int main(int argc, char **argv) {
                     main_count = 0;
                 }
             }
-            printf("check major row success ");
-            printf("%d\n", four_in_a_row);
             //check minor diagonal
             int minor_count = 0;
             for (int i = row_choice - 4, j = col_choice + 4;  i < row_choice + 4 || j > 0; i++, j--) {
@@ -131,18 +131,16 @@ int main(int argc, char **argv) {
                     minor_count = 0;
                 }
             }
-            printf("check minor diagonal success ");
-            printf("%d\n", four_in_a_row);
-
             if (four_in_a_row) {
                 printf("Invalid choice. You have created 4-in-a-row.\n");
                 board[row_choice][col_choice] = '-'; //reset
-            } // otherwise leave the piece in
+            } else { // otherwise leave the piece in
+                spaces--;
+            }
         } else {
             printf("Invalid choice. That space is already occupied.\n");
         }
-
-    } while (piece != 'q'); // board is not full
+    }
 
     // final print
     printf("Congratulations, you have filled the board with no 4-in-a-rows!\n");
