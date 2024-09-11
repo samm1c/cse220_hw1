@@ -109,7 +109,6 @@ int main(int argc, char **argv) {
                     four_in_a_row = 1;
                     break;
                 } else if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
-                    printf("skipped\n");
                     continue;
                 } else if (board[i][j] == piece) {
                     main_count++;
