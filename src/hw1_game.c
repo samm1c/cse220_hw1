@@ -77,13 +77,14 @@ int main(int argc, char **argv) {
             int row_count = 0;
 
             for (int i = col_choice - 4; i < col_choice + 4; i++) { // iterating over column number, row stays the same
-                if (row_count >= 4) { // stop once four in a row detected
-                    four_in_a_row = 1;
-                    break;
-                } else if (i < 0 || i >= num_cols) { // skip if out of bounds
+                if (i < 0 || i >= num_cols) { // skip if out of bounds
                     continue;
                 } else if (board[row_choice][i] == piece) {
                     row_count++;
+                    if (row_count >= 4) { // stop once four in a row detected
+                        four_in_a_row = 1;
+                        break;
+                    }
                 } else {
                     row_count = 0;
                 }
@@ -91,13 +92,14 @@ int main(int argc, char **argv) {
             //check column
             int col_count = 0;
             for (int i = row_choice - 4; i < row_choice + 4; i++) { // iterating over row number, column stays the same
-                if (col_count >= 4) {
-                    four_in_a_row = 1;
-                    break;
-                } else if (i < 0 || i >= num_rows) { // skip if out of bounds
+                if (i < 0 || i >= num_rows) { // skip if out of bounds
                     continue;
                 } else if (board[i][col_choice] == piece) {
-                    col_count++;
+                    col_count++; // increment
+                    if (col_count >= 4) { // check if its four in a row
+                        four_in_a_row = 1;
+                        break;
+                    }
                 } else {
                     col_count = 0;
                 }
@@ -105,13 +107,14 @@ int main(int argc, char **argv) {
             //check main diagonal
             int main_count = 0;
             for (int i = row_choice - 4, j = col_choice - 4;  i < row_choice + 4 || j < col_choice + 4; i++, j++) {
-                if (main_count >= 4) {
-                    four_in_a_row = 1;
-                    break;
-                } else if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
+                if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
                     continue;
                 } else if (board[i][j] == piece) {
                     main_count++;
+                    if (main_count >= 4) {
+                        four_in_a_row = 1;
+                        break;
+                    }
                 } else {
                     main_count = 0;
                 }
@@ -119,13 +122,14 @@ int main(int argc, char **argv) {
             //check minor diagonal
             int minor_count = 0;
             for (int i = row_choice - 4, j = col_choice + 4;  i < row_choice + 4 || j > 0; i++, j--) {
-                if (minor_count >= 4) {
-                    four_in_a_row = 1;
-                    break;
-                } else if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
+                if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
                     continue;
                 } else if (board[i][j] == piece) {
                     minor_count++;
+                    if (minor_count >= 4) {
+                        four_in_a_row = 1;
+                        break;
+                    } 
                 } else {
                     minor_count = 0;
                 }
