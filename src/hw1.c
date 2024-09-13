@@ -222,6 +222,8 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
     if (spaces_left == 0) { // success
         // move the results of the board into the board string and update number of x's and o's
         int str_index = 0;
+        (*num_x) = 0;
+        (*num_o) = 0;
         for (int i = 0; i < num_rows; i++) {
             for (int j = 0; j < num_cols; j++) {
                 board_string[str_index++] = board[i][j];
