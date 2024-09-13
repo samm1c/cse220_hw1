@@ -75,7 +75,6 @@ int main(int argc, char **argv) {
             board[row_choice][col_choice] = piece; // test the piece inside
             //check row
             int row_count = 0;
-
             for (int i = col_choice - 4; i < col_choice + 4; i++) { // iterating over column number, row stays the same
                 if (i < 0 || i >= num_cols) { // skip if out of bounds
                     continue;
@@ -121,7 +120,7 @@ int main(int argc, char **argv) {
             }
             //check minor diagonal
             int minor_count = 0;
-            for (int i = row_choice - 4, j = col_choice + 4;  i < row_choice + 4 || j > 0; i++, j--) {
+            for (int i = row_choice - 4, j = col_choice + 4;  i < row_choice + 4 || j >= 0; i++, j--) {
                 if (i < 0 || i >= num_rows || j < 0 || j >= num_cols) { // check for out of bounds
                     continue;
                 } else if (board[i][j] == piece) {
