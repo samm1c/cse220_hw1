@@ -31,6 +31,7 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
        printf("\n");
     }
     int four_in_a_row, row_count, col_count, major_count, minor_count;
+    char test_letters[2] = {'x', 'o'};
     //check number of empty spots, x's, and o's
     int spaces_total = 0;
 
@@ -40,6 +41,95 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
         for (int j = 0; j < num_cols; j++) {
             if (board[i][j] == '-') {
                 spaces_total++;
+                // check for FORCED four in a row
+                //reset
+                int x_four_in_a_row = 0; // try putting in x and see if it's a four
+                int o_four_in_a_row = 0; // try putting in o and see if it's a four
+                
+                for (int t = 0; t < 2; t++) {
+                    row_count = 0;
+                    col_count = 0;
+                    major_count = 0;
+                    minor_count = 0;
+                    board[i][j] = test_letters[t]; //place it in temporarily
+                    //row
+                    for (int p = j - 4; p < j + 4; p++) {
+                        if (p < 0 || p >= num_cols) { // out of bounds
+                            continue;
+                        } else if (board[i][p] == test_letters[t]) {
+                            row_count++;
+                            if (row_count >= 4) {
+                                if (t == 0) {
+                                    x_four_in_a_row = 1;
+                                } else {
+                                    o_four_in_a_row = 1;
+                                }
+                            }
+                        } else {
+                            row_count = 0;
+                        }
+                    }
+                    //column
+                    for (int p = i - 4; p < i + 4; p++) {
+                        if (p < 0 || p >= num_rows) {
+                            continue;
+                        } else if (board[p][j] == test_letters[t]) {
+                            col_count++;
+                            if (col_count >= 4) {
+                                if (t == 0) {
+                                    x_four_in_a_row = 1;
+                                } else {
+                                    o_four_in_a_row = 1;
+                                }
+                            }
+                        } else {
+                            col_count = 0;
+                        }
+                    }
+                    //major diagonal
+                    for (int p = i - 4, q = j - 4; p < i + 4 || q < j + 4; p++, q++) {
+                        if (p < 0 || p >= num_rows || q < 0 || q >= num_cols) {
+                            continue;
+                        } else if (board[p][q] == test_letters[t]) {
+                            major_count++;
+                        } else {
+                            major_count = 0;
+                            if (major_count >= 4) {
+                                if (t == 0) {
+                                    x_four_in_a_row = 1;
+                                } else {
+                                    o_four_in_a_row = 1;
+                                }
+                            }
+                        }
+                    }
+                    //minor diagonal
+                    for (int p = i - 4, q = j + 4; p < i + 4 || q >= 0; p++, q--) {
+                        if (p < 0 || p >= num_rows || q < 0 || q >= num_cols) {
+                            continue;
+                        } else if (board[p][q] == test_letters[t]) {
+                            minor_count++;
+                            if (minor_count >= 4) {
+                                if (t == 0) {
+                                    x_four_in_a_row = 1;
+                                } else {
+                                    o_four_in_a_row = 1;
+                                }
+                            }
+                        } else {
+                            minor_count = 0;
+                        }
+                    }
+                    //printf("min : %d   min count: %d\n", four_in_a_row, minor_count);
+                }
+
+                //printf("i: %d \t j: %d \t x_4: %d \t o_4: %d \n", i, j, x_four_in_a_row, o_four_in_a_row);
+                if (x_four_in_a_row && o_four_in_a_row) {
+                    return INITIAL_BOARD_NO_SOLUTION;
+                }
+                board[i][j] = '-'; // put it back again no matter the result
+
+
             } else if (board[i][j] == 'x' || board[i][j] == 'o') { // check whether there is already a 4-in-a-row
                 //reset
                 four_in_a_row = 0;
@@ -127,12 +217,10 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                 if (board[i][j] == '-') {  // empty space 
                     //printf("i: %d \t   j:  %d\n", i, j);
                     // check for four-in-a-row for both x and o
-                    
-                    char test_letters[2] = {'x', 'o'};
+                    four_in_a_row = 0;
                     //check at least 4 spaces out
                     for (int t = 0; t < 2; t++) {
                         //reset
-                        four_in_a_row = 0;
                         row_count = 0;
                         col_count = 0;
                         major_count = 0;
@@ -272,9 +360,6 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
     }
     printf("%c  %d  %d  %p   %p", initial_state[0], num_rows, num_cols, (void *)num_x, (void *)num_o);
     return 0;
-
-
-    
 }
 
 char* generate_medium(const char *final_state, int num_rows, int num_cols) { 
