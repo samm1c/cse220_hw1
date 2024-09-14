@@ -9,7 +9,7 @@ char board[MAX_ROWS][MAX_COLS] = {0};
 /*
 Hint: Consider adding a global variable to store a string large enough to store a board.
 */
-char board_string[MAX_ROWS * MAX_COLS];
+char board_string[(MAX_ROWS * MAX_COLS)];
 
 void initialize_board(const char *initial_state, int num_rows, int num_cols) {
     int index = 0;
@@ -24,15 +24,18 @@ void initialize_board(const char *initial_state, int num_rows, int num_cols) {
 
 int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int *num_o) {  
     initialize_board(initial_state, num_rows, num_cols);
-    //for (int a = 0; a < num_rows; a++) {
-    //    for (int b = 0; b < num_cols; b++) {
-    //        printf("%c ", board[a][b]);
-    //    }
-    //    printf("\n");
-    //}
+    for (int a = 0; a < num_rows; a++) {
+       for (int b = 0; b < num_cols; b++) {
+           printf("%c ", board[a][b]);
+       }
+       printf("\n");
+    }
     int four_in_a_row, row_count, col_count, major_count, minor_count;
     //check number of empty spots, x's, and o's
     int spaces_total = 0;
+
+
+
     for (int i = 0; i < num_rows; i++) {
         for (int j = 0; j < num_cols; j++) {
             if (board[i][j] == '-') {
@@ -104,22 +107,29 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                 if (four_in_a_row) {
                     return INITIAL_BOARD_FOUR_IN_A_ROW;
                 }
+
+
             } else { // not a -, x, o, bad character
                 return INITIAL_BOARD_INVALID_CHARACTERS;
             }
         }
     }
 
+
+
+
     int spaces_left = spaces_total;
     //printf("spaces total:  %d\n" , spaces_total);
     // you check for four in a rows -> keep placing
-    for (int s = 0; s < spaces_total && spaces_left > 0; s++) {
+    for (int s = 0; (s < spaces_total) && (spaces_left > 0); s++) {
         for (int i = 0; i < num_rows; i++) {
             for (int j = 0; j < num_cols; j++) {
                 if (board[i][j] == '-') {  // empty space 
                     //printf("i: %d \t   j:  %d\n", i, j);
                     // check for four-in-a-row for both x and o
+                    
                     char test_letters[2] = {'x', 'o'};
+                    //check at least 4 spaces out
                     for (int t = 0; t < 2; t++) {
                         //reset
                         four_in_a_row = 0;
@@ -127,7 +137,7 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                         col_count = 0;
                         major_count = 0;
                         minor_count = 0;
-                        //check at least 4 spaces out
+
                         board[i][j] = test_letters[t]; // place the test letter inside the board for now
                         //row
                         for (int k = j - 4; k < j + 4; k++) {
@@ -136,6 +146,9 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                             } else if (board[i][k] == test_letters[t]) {
                                 row_count++;
                                 if (row_count >= 4) {
+                                    // if (four_in_a_row && t == 1) {
+                                    //     return INITIAL_BOARD_FOUR_IN_A_ROW;
+                                    // }
                                     four_in_a_row = 1;
                                     break;
                                 }
@@ -151,6 +164,9 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                             } else if (board[k][j] == test_letters[t]) {
                                 col_count++;
                                 if (col_count >= 4) {
+                                    // if (four_in_a_row && t == 1 && row_count != 4) {
+                                    //     return INITIAL_BOARD_FOUR_IN_A_ROW;
+                                    // }
                                     four_in_a_row = 1;
                                     break;
                                 }
@@ -166,6 +182,9 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                             } else if (board[k][p] == test_letters[t]) {
                                 major_count++;
                                 if (major_count >= 4) {
+                                    // if (four_in_a_row && t == 1 && row_count != 4 && col_count != 4) {
+                                    //     return INITIAL_BOARD_FOUR_IN_A_ROW;
+                                    // }
                                     four_in_a_row = 1;
                                     break;
                                 }
@@ -182,6 +201,9 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                             } else if (board[k][p] == test_letters[t]) {
                                 minor_count++;
                                 if (minor_count >= 4) {
+                                    // if (four_in_a_row && t == 1 && row_count != 4 && col_count != 4 && major_count != 4) {
+                                    //     return INITIAL_BOARD_FOUR_IN_A_ROW;
+                                    // }
                                     four_in_a_row = 1;
                                     break;
                                 }
@@ -201,24 +223,32 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
                             break;
                         }
                     }
+                    
                     if (!four_in_a_row) { // replace test letter
                         board[i][j] = '-';
                     }
                     
-                    //for (int a = 0; a < num_rows; a++) {
+                    // for (int a = 0; a < num_rows; a++) {
                     //    for (int b = 0; b < num_cols; b++) {
                     //        printf("%c ", board[a][b]);
                     //    }
                     //    printf("\n");
-                    //}
+                    // }
                 }
             }
         }
-        if (s == spaces_total) { // absolutely no difference, meant that you made no moves, so no solution
+        
+        
+        //printf("s %d < spaces_total %d || spaces_left %d > 0\n", s, spaces_total, spaces_left);
+        if (spaces_left == spaces_total) { // absolutely no difference, meant that you made no moves, so no solution
             return INITIAL_BOARD_NO_SOLUTION;
         }
         //printf("\nspaces: %d\n", spaces_left);
     }
+
+
+
+
     if (spaces_left == 0) { // success
         // move the results of the board into the board string and update number of x's and o's
         int str_index = 0;
@@ -227,21 +257,24 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
         for (int i = 0; i < num_rows; i++) {
             for (int j = 0; j < num_cols; j++) {
                 board_string[str_index++] = board[i][j];
+                //printf("%c", board_string[str_index]);
                 if (board[i][j] == 'x') {
                     (*num_x)++;
                 } else {
                     (*num_o)++;
                 }
             }
-            board_string[str_index++] = '\n';
+            //board_string[str_index++] = '\n';
         }
         return FOUND_SOLUTION;
     } else {
         return HEURISTICS_FAILED;
     }
-    
-    //printf("%c  %d  %d  %p   %p", initial_state[0], num_rows, num_cols, (void *)num_x, (void *)num_o);
+    printf("%c  %d  %d  %p   %p", initial_state[0], num_rows, num_cols, (void *)num_x, (void *)num_o);
     return 0;
+
+
+    
 }
 
 char* generate_medium(const char *final_state, int num_rows, int num_cols) { 
