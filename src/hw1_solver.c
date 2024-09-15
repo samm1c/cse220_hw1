@@ -19,13 +19,13 @@ int main(int argc, char **argv)
 
     int result = solve(argv[3], num_rows, num_cols, &num_x, &num_o);
     //print test
-    printf("result success\n");
-    for (int i = 0; i < num_rows; i++) {
-        for (int j = 0; j < num_cols; j++) {
-            printf("%c ", board[i][j]);
-        }
-        printf("\n");
-    }
+    // printf("result success\n");
+    // for (int i = 0; i < num_rows; i++) {
+    //     for (int j = 0; j < num_cols; j++) {
+    //         printf("%c ", board[i][j]);
+    //     }
+    //     printf("\n");
+    // }
     // for (int i = 0; i < num_rows; i++) {
     //     for (int j = 0; j < num_cols; j++) {
     //         if (board_string[i+j] != 'x' && board_string[i+j] != 'o'&& board_string[i+j] != '\n' && board_string[i+j] != '-') {

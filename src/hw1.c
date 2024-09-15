@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <string.h>
 
 #include "hw1.h"
 
@@ -24,12 +25,12 @@ void initialize_board(const char *initial_state, int num_rows, int num_cols) {
 
 int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int *num_o) {  
     initialize_board(initial_state, num_rows, num_cols);
-    for (int a = 0; a < num_rows; a++) {
-       for (int b = 0; b < num_cols; b++) {
-           printf("%c ", board[a][b]);
-       }
-       printf("\n");
-    }
+    // for (int a = 0; a < num_rows; a++) {
+    //    for (int b = 0; b < num_cols; b++) {
+    //        printf("%c ", board[a][b]);
+    //    }
+    //    printf("\n");
+    // }
     int four_in_a_row, row_count, col_count, major_count, minor_count;
     char test_letters[2] = {'x', 'o'};
     //check number of empty spots, x's, and o's
@@ -358,11 +359,96 @@ int solve(const char *initial_state, int num_rows, int num_cols, int *num_x, int
     } else {
         return HEURISTICS_FAILED;
     }
-    printf("%c  %d  %d  %p   %p", initial_state[0], num_rows, num_cols, (void *)num_x, (void *)num_o);
-    return 0;
+    //printf("%c  %d  %d  %p   %p", initial_state[0], num_rows, num_cols, (void *)num_x, (void *)num_o);
+    //return 0;
 }
 
-char* generate_medium(const char *final_state, int num_rows, int num_cols) { 
-    printf("%c   %d  %d", final_state[0], num_rows, num_cols);
-    return 0;
+char* generate_medium(const char *final_state, int num_rows, int num_cols) {
+    // calculate initial quantities of x's and o's
+    int num_x = 0;
+    int num_o = 0;
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_cols; j++) {
+            if (board[i][j] == 'x') {
+                num_x++;
+            } else {
+                num_o++;
+            }
+        }
+    }
+    initialize_board(final_state, num_rows, num_cols);
+    // gen will be our generated board, which is a copy of the original board
+    char gen[num_rows][num_cols];
+    //strcpy(gen, board);
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_cols; j++) {
+            gen[i][j] = board[i][j];
+        }
+    }
+    // //print test
+    // for (int i = 0; i < num_rows; i++) {
+    //     for (int j = 0; j < num_cols; j++) {
+    //         printf("%c ", board[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+
+
+    //printf("\nx's: %d \t o's: %d \n\n", num_x, num_o);
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_cols; j++) {
+            // change current position to empty -
+            char temp = gen[i][j];
+            gen[i][j] = '-';
+            // update x and o values
+            if (temp == 'x') {
+                num_x--;
+            } else {
+                num_o--;
+            }
+
+            // convert gen into char STRING so that it can be passed into solve
+            int str_index = 0;
+            for (int p = 0; p < num_rows; p++) {
+                for (int q = 0; q < num_cols; q++) {
+                    board_string[str_index++] = gen[p][q];
+                }
+            }
+
+            // is this solveable? if so keep the board, if not, put it back together again
+            if (solve(board_string, num_rows, num_cols, &num_x, &num_o) == 1) {
+                continue;
+            } else {
+                gen[i][j] = temp;
+                if (temp == 'x') {
+                    num_x++;
+                } else {
+                    num_o++;
+                }
+            }
+            //print test for each index
+            // for (int a = 0; a < num_rows; a++) {
+            //     for (int b = 0; b < num_cols; b++) {
+            //        printf("%c ", board[a][b]);
+            //     }
+            //     printf("\n");
+            // }
+            // printf("\n");
+        }
+    }
+    
+    //convert one more time into string
+    int str_index = 0;
+    for (int p = 0; p < num_rows; p++) {
+        for (int q = 0; q < num_cols; q++) {
+            board_string[str_index++] = gen[p][q];
+        }
+    }
+
+    // lastly, put the unsolved, generated board into the actual board variable
+    initialize_board(board_string, num_rows, num_cols);
+    return board_string;
+    
+    //printf("%c   %d  %d", final_state[0], num_rows, num_cols);
+    //return 0;
 }
