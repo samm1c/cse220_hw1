@@ -329,7 +329,6 @@ char* generate_medium(const char *final_state, int num_rows, int num_cols) {
             }
         }
     }
-    //initialize_board(final_state, num_rows, num_cols);
     // gen will be our generated board, which is a copy of the original board
     int index = 0; // to count final_state
     char gen[num_rows][num_cols];
