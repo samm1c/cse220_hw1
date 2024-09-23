@@ -18,14 +18,6 @@ int main(int argc, char **argv)
 
     initial_state = generate_medium(argv[3], num_rows, num_cols);
 
-    // printf("\nresult success\n");
-    // for (int i = 0; i < num_rows; i++) {
-    //     for (int j = 0; j < num_cols; j++) {
-    //         printf("%c ", board[i][j]);
-    //     }
-    //     printf("\n");
-    // }
-
     printf("Result: %s\n", initial_state);
     return 0;
 }
